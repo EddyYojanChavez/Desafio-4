@@ -1,0 +1,91 @@
+#ej1---------------------------------------------------------------------------------------------------------------------------
+import sympy as sp
+
+# Definimos la variable y la función
+x = sp.symbols('x')
+f = 25*x**3 - 6*x**2 + 7*x - 88
+
+# Punto base y el valor de evaluación
+x_base = 1
+x_eval = 3
+
+# Serie de Taylor hasta el tercer orden
+taylor_tercer_orden = f.series(x, x0=x_base, n=4).removeO()
+
+# Evaluamos la serie de Taylor y la función original
+aprox_taylor = taylor_tercer_orden.subs(x, x_eval)
+valor_real = f.subs(x, x_eval)
+
+# Calculamos el error relativo porcentual verdadero
+error_relativo = abs((valor_real - aprox_taylor) / valor_real) * 100
+
+# Mostramos los resultados
+print(f"Serie de Taylor hasta tercer orden: {taylor_tercer_orden}")
+print(f"Valor de f(3) (aproximado con Taylor): {aprox_taylor}")
+print(f"Valor de f(3) (real): {valor_real}")
+print(f"Error relativo porcentual verdadero: {error_relativo:.6f}%")
+
+
+#ej2--------------------------------------------------------------------------------------------------------------------------------
+import sympy as sp
+
+# Definimos la variable y la función
+x = sp.symbols('x')
+f = sp.ln(x)
+
+# Punto base y el valor de evaluación
+x_base = 1
+x_eval = 2.5
+
+# Serie de Taylor hasta el cuarto orden
+taylor_cuarto_orden = f.series(x, x0=x_base, n=5).removeO()
+
+# Evaluamos la serie de Taylor y la función original
+aprox_taylor = taylor_cuarto_orden.subs(x, x_eval)
+valor_real = f.subs(x, x_eval)
+
+# Calculamos el error relativo porcentual verdadero
+error_relativo = abs((valor_real - aprox_taylor) / valor_real) * 100
+
+# Mostramos los resultados
+print(f"Serie de Taylor hasta cuarto orden: {taylor_cuarto_orden}")
+print(f"Valor de f(2.5) (aproximado con Taylor): {aprox_taylor}")
+print(f"Valor de f(2.5) (real): {valor_real}")
+print(f"Error relativo porcentual verdadero: {error_relativo:.6f}%")
+
+#ej3----------------------------------------------------------------------------------------------
+import numpy as np
+
+# Definimos los valores específicos del problema
+B = 20  # ancho (m)
+H = 0.3  # profundidad (m)
+n = 0.03  # coeficiente de rugosidad
+S = 0.0003  # valor promedio de la pendiente
+delta_n = 0.003  # error en n (10%)
+delta_S = 0.00006  # error en S
+
+# Fórmula de Manning para flujo Q
+def flujo_manning(B, H, n, S):
+    return (1 / n) * ((B * H) ** (5 / 3)) / ((B + 2 * H) ** (2 / 3)) * np.sqrt(S)
+
+# Derivada parcial de Q con respecto a n
+def dQ_dn(B, H, n, S):
+    return -(1 / n**2) * ((B * H) ** (5 / 3)) / ((B + 2 * H) ** (2 / 3)) * np.sqrt(S)
+
+# Derivada parcial de Q con respecto a S
+def dQ_dS(B, H, n, S):
+    return (1 / (2 * n)) * ((B * H) ** (5 / 3)) / ((B + 2 * H) ** (2 / 3)) * (1 / np.sqrt(S))
+
+# Calculamos el flujo Q
+Q = flujo_manning(B, H, n, S)
+
+# Calculamos las derivadas parciales
+dQn = dQ_dn(B, H, n, S)
+dQS = dQ_dS(B, H, n, S)
+
+# Error total por propagación
+error_total = abs(dQn) * delta_n + abs(dQS) * delta_S
+
+print(f"El flujo calculado es: {Q:.6f} m^3/s")
+print(f"El error de primer orden en el flujo es: {error_total:.6f} m^3/s")
+
